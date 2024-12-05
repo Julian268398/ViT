@@ -32,6 +32,9 @@ class PatchEmbedding(nn.Module):
 
     def __init__(self, img_size, patch_size, in_chans=3, embed_dim=512):
         super().__init__()
+        if img_size % patch_size != 0:
+            raise ValueError(f"Image size ({img_size}) must be divisible by patch size ({patch_size}).")
+
         self.img_size = img_size
         self.patch_size = patch_size
         self.n_patches = (img_size // patch_size) ** 2
@@ -273,15 +276,17 @@ class VisionTransformer(nn.Module):
 
           norm: nn.LayerNorm, Layer normalization.
     """
-    def __init__(self, image_size=384, patch_size=16, in_chans=3, n_classes=1000, embed_dim=768, depth=12, n_heads=12, mlp_ratio=4., qkv_bias=True, p=0., attn_p=0.):
+    def __init__(self, image_size=256, patch_size=16, in_chans=3, n_classes=1000, embed_dim=768, depth=12, n_heads=12, mlp_ratio=4., qkv_bias=True, p=0., attn_p=0.):
         super().__init__()
 
-        self.patch_embed = PatchEmbedding(img_size=image_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
+        self.patch_embed = PatchEmbedding(img_size=image_size, patch_size=patch_size, in_chans=in_chans,
+                                          embed_dim=embed_dim)
         self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
         self.pos_embed = nn.Parameter(torch.zeros(1, 1 + self.patch_embed.n_patches, embed_dim))
         self.pos_drop = nn.Dropout(p=p)
-        self.blocks = nn.ModuleList([Block(dim=embed_dim, n_heads=n_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, p=p, attn_p=attn_p)
-                                     for _ in range(depth)])
+        self.blocks = nn.ModuleList(
+            [Block(dim=embed_dim, n_heads=n_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, p=p, attn_p=attn_p)
+             for _ in range(depth)])
         self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
         self.head = nn.Linear(embed_dim, n_classes)
 
