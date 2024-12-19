@@ -1,5 +1,15 @@
 import torch
 import torch.nn as nn
+import numpy as np
+from torch.utils.data import DataLoader
+import os
+from PIL import Image
+from torch.utils.data import Dataset
+import pydicom
+from torchvision import transforms
+
+
+
 
 class PatchEmbedding(nn.Module):
     """
@@ -30,7 +40,7 @@ class PatchEmbedding(nn.Module):
         Convolutional layer that does both the splitting into patches and their embedding.
     """
 
-    def __init__(self, img_size, patch_size, in_chans=3, embed_dim=512):
+    def __init__(self, img_size, patch_size, in_chans=1, embed_dim=768):
         super().__init__()
         if img_size % patch_size != 0:
             raise ValueError(f"Image size ({img_size}) must be divisible by patch size ({patch_size}).")
@@ -90,12 +100,13 @@ class Attention(nn.Module):
 
         attn_drop, proj_drop: nn.Dropout, Dropout layers
     """
+
     def __init__(self, dim, n_heads=12, qkv_bias=True, attn_p=0., proj_p=0.):
         super().__init__()
         self.n_heads = n_heads
         self.dim = dim
         self.head_dim = dim // n_heads
-        self.scale = self.head_dim ** -0.5 #comes from "All you need is atention"
+        self.scale = self.head_dim ** -0.5  # comes from "All you need is atention"
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
         self.attn_drop = nn.Dropout(attn_p)
@@ -132,7 +143,7 @@ class Attention(nn.Module):
 
         weighted_avg = attn @ v
         # (n_samples, n_heads, n_patches + 1, head_dim)
-        weighted_avg = weighted_avg.transpose(1,2)
+        weighted_avg = weighted_avg.transpose(1, 2)
         # (n_samples, n_patches + 1, n_heads, head_dim)
         weighted_avg = weighted_avg.flatten(2)
         # (n_samples, n_patches + 1, dim)
@@ -142,6 +153,7 @@ class Attention(nn.Module):
         # (n_samples, n_patches + 1, dim)
 
         return x
+
 
 class MLP(nn.Module):
     """
@@ -214,7 +226,7 @@ class Block(nn.Module):
             attn: Attention, Attention module
 
             mlp: MLP, MLP module
-        """
+    """
 
     def __init__(self, dim, n_heads, mlp_ratio=4.0, qkv_bias=True, p=0., attn_p=0.):
         super().__init__()
@@ -236,6 +248,7 @@ class Block(nn.Module):
         x = x + self.mlp(self.norm2(x))
 
         return x
+
 
 class VisionTransformer(nn.Module):
     """
@@ -266,57 +279,145 @@ class VisionTransformer(nn.Module):
     Attributes:
           patch_embed : PatchEmbed, Instance of 'PatchEmbed' layer
 
-          cls_token: nn.Parameter, Learnable parameter that will represent the first token in the sequence. It has `embed_dim` elements.
+          cls_token: nn.Parameter, Learnable parameter that will represent the first token (classification token)
 
-          pos_emb: nn.Parameter, Positional embedding of the cls token + all the patches. It has `(n_patches + 1) * embed_dim` elements.
+          pos_embed: nn.Parameter, Learnable position embedding for each token
 
-          pos_drop: nn.Dropout, Dropout layer
+          transformer_blocks: nn.ModuleList, List of transformer blocks
 
-          blocks: nn.ModuleList, List of `Block` modules
+          norm: nn.LayerNorm, Layer normalization
 
-          norm: nn.LayerNorm, Layer normalization.
+          head: nn.Linear, Classifier head
     """
-    def __init__(self, image_size=256, patch_size=16, in_chans=3, n_classes=1000, embed_dim=768, depth=12, n_heads=12, mlp_ratio=4., qkv_bias=True, p=0., attn_p=0.):
+
+    def __init__(self, img_size=512, patch_size=16, in_chans=1, n_classes=1000, embed_dim=768, depth=12, n_heads=12,
+                 mlp_ratio=4.0, qkv_bias=True, p=0., attn_p=0.):
         super().__init__()
+        self.img_size = img_size
+        self.patch_size = patch_size
+        self.in_chans = in_chans
+        self.n_classes = n_classes
+        self.embed_dim = embed_dim
+        self.depth = depth
+        self.n_heads = n_heads
+        self.mlp_ratio = mlp_ratio
+        self.qkv_bias = qkv_bias
+        self.p = p
+        self.attn_p = attn_p
 
-        self.patch_embed = PatchEmbedding(img_size=image_size, patch_size=patch_size, in_chans=in_chans,
+        # Initialize patch embedding
+        self.patch_embed = PatchEmbedding(img_size=img_size, patch_size=patch_size, in_chans=in_chans,
                                           embed_dim=embed_dim)
-        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
-        self.pos_embed = nn.Parameter(torch.zeros(1, 1 + self.patch_embed.n_patches, embed_dim))
-        self.pos_drop = nn.Dropout(p=p)
-        self.blocks = nn.ModuleList(
-            [Block(dim=embed_dim, n_heads=n_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, p=p, attn_p=attn_p)
-             for _ in range(depth)])
-        self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
-        self.head = nn.Linear(embed_dim, n_classes)
 
+        # Classification token
+        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
+
+        # Positional embedding
+        self.pos_embed = nn.Parameter(torch.zeros(1, self.patch_embed.n_patches + 1, embed_dim))
+
+        # Transformer blocks
+        self.transformer_blocks = nn.ModuleList(
+            [Block(dim=embed_dim, n_heads=n_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, p=p, attn_p=attn_p) for _ in
+             range(depth)]
+        )
+
+        # Layer normalization
+        self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
+
+        # Classifier head
+        self.head = nn.Linear(embed_dim, n_classes)
 
     def forward(self, x):
         """
-            Run forward pass
-            :param x: torch.Tensor
-            Shape '(n_samples, in_chans, img_size, img_size)'
-            :return: logits: torch.Tensor
-            Logits over all casses - '(n_samples, n_classes)'
-        """
+        Run forward pass.
 
-        n_samples = x.shape[0]
+        :param x: torch.Tensor
+        Shape '(n_samples, in_chans, img_size, img_size)'
+
+        :return: torch.Tensor
+        Shape '(n_samples, n_classes)'
+        """
+        # Patch embedding
         x = self.patch_embed(x)
 
-        cls_token = self.cls_token.expand(n_samples, -1, -1)
-        # (n_samples, 1, embed_dim)
-        x = torch.cat((cls_token, x), dim=1)
-        # (n_samples, n_patches + 1, embed_dim)
+        # Add class token and positional embeddings
+        cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
+        x = torch.cat([cls_tokens, x], dim=1)
         x = x + self.pos_embed
-        # (n_samples, n_patches + 1, embed_dim)
-        x = self.pos_drop(x)
 
-        for block in self.blocks:
+        # Pass through transformer blocks
+        for block in self.transformer_blocks:
             x = block(x)
 
+        # Layer normalization and classification head
         x = self.norm(x)
-
-        cls_token_final = x[:, 0] # just CLS token
-        x = self.head(cls_token_final)
+        x = x[:, 0]
+        x = self.head(x)
 
         return x
+
+
+class DICOMDataset(Dataset):
+    """
+    Dataset dla obrazów DICOM
+    """
+
+    def __init__(self, dicom_dir, transform=None):
+        self.dicom_dir = dicom_dir
+        self.transform = transform
+        self.image_paths = []
+        self.labels = []
+
+        # Zbieranie ścieżek do plików DICOM i etykiet
+        for label in os.listdir(dicom_dir):
+            class_folder = os.path.join(dicom_dir, label)
+            if os.path.isdir(class_folder):
+                for dicom_file in os.listdir(class_folder):
+                    if dicom_file.endswith(".dcm"):
+                        self.image_paths.append(os.path.join(class_folder, dicom_file))
+                        self.labels.append(0 if label == 'benign' else 1)  # 'benign' -> 0, 'malignant' -> 1
+
+    def __len__(self):
+        """
+        Wymagane w PyTorch, przez klasę Dataset
+        zwraca liczbę próbek w zbiorze
+        """
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        dicom_path = self.image_paths[idx]
+        label = self.labels[idx]
+
+        # Wczytanie obrazu DICOM
+        dicom_data = pydicom.dcmread(dicom_path)
+        image = dicom_data.pixel_array
+
+        # Normalizacja obrazu do zakresu [0, 1]
+        image = (image - np.min(image)) / (np.max(image) - np.min(image))
+
+        # Konwersja obrazu na format PIL, aby móc stosować transformacje
+        image = Image.fromarray((image * 255).astype(np.uint8))  # Zmiana na typ uint8 dla PIL
+
+        if self.transform:
+            image = self.transform(image)
+
+        return image, label
+
+
+# Przygotowanie transformacji
+transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),  # Konwersja na obraz 1-kanałowy
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5], std=[0.5]),  # Normalizacja dla obrazów 1-kanałowych
+])
+
+
+# Przygotowanie zbioru treningowego i walidacyjnego
+def get_dataloaders(data_dir, batch_size):
+    train_dataset = DICOMDataset(dicom_dir=f"{data_dir}/training", transform=transform)
+    val_dataset = DICOMDataset(dicom_dir=f"{data_dir}/validating", transform=transform)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, val_loader

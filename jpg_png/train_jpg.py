@@ -4,18 +4,18 @@ from torchvision import transforms
 from torchvision.datasets import ImageFolder
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
-from main import VisionTransformer
+from main_jpg import VisionTransformer
 from PIL import Image
 
 # Funkcja walidacji rozmiaru
-def validate_image_size(image, target_size=(256, 256)):
+def validate_image_size(image, target_size=(512, 512)):
     if image.size != target_size:
         print(f"Warning: Resizing image from {image.size} to {target_size}")
         return image.resize(target_size, Image.BICUBIC)
     return image
 
 # Konfiguracja
-DATA_DIR = "C:\\Users\\julia\\Desktop\\praca inżynierska\\photos\\suma"  # Zmień na ścieżkę do swojego folderu
+DATA_DIR = "C:\\Users\\julia\\Desktop\\jpg_png"  # Zmień na ścieżkę do swojego folderu
 BATCH_SIZE = 8
 EPOCHS = 20
 LEARNING_RATE = 3e-4
@@ -30,8 +30,8 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
 ])
 
-train_dataset = ImageFolder(root=f"{DATA_DIR}/train", transform=transform)
-val_dataset = ImageFolder(root=f"{DATA_DIR}/val", transform=transform)
+train_dataset = ImageFolder(root=f"{DATA_DIR}/training", transform=transform)
+val_dataset = ImageFolder(root=f"{DATA_DIR}/validating", transform=transform)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -69,4 +69,4 @@ for epoch in range(EPOCHS):
 
     print(f"Epoch {epoch + 1}/{EPOCHS}, Train Loss: {train_loss/len(train_loader):.4f}, Val Loss: {val_loss/len(val_loader):.4f}")
 
-torch.save(model.state_dict(), "model_weights.pth")
+torch.save(model.state_dict(), "model_jpg.pth")
