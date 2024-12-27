@@ -7,18 +7,32 @@ import datasets
 
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 from transformers import ViTImageProcessor
+from transformers import SwinForImageClassification
 from transformers import ViTForImageClassification
 from transformers import TrainingArguments
 from transformers import Trainer
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
-def model_processor(model_name, Vit_or_Auto):
-    if Vit_or_Auto == 'vit':
-        processor = ViTImageProcessor.from_pretrained(model_name)
-        return processor
-    elif Vit_or_Auto == 'auto':
-        processor = AutoImageProcessor.from_pretrained(model_name)
-        return processor
+def set_requires_grad_for_layers(model, freeze_until_layer=None):
+    """
+    Zarządzaj `requires_grad` dla wag modelu.
+    - Zamraża wagi we wszystkich warstwach do podanej `freeze_until_layer`.
+    - Odblokowuje wagi w głębszych warstwach.
+
+    :param model: Model, na którym operujemy.
+    :param freeze_until_layer: Nazwa ostatniej warstwy, którą zamrażamy (np. 'encoder.layer.8').
+    """
+    freeze = True
+    for name, param in model.named_parameters():
+        if freeze_until_layer and freeze and freeze_until_layer in name:
+            freeze = False  # Odblokuj wagi po wskazanej warstwie
+        param.requires_grad = not freeze
+    print(f"Zmieniono `requires_grad` w modelu. Głębsze warstwy od '{freeze_until_layer}' są odblokowane.")
+
+def model_processor(model_name): #spróbować usunąć wybór auto i czy będzie działało
+    processor = ViTImageProcessor.from_pretrained(model_name)
+    return processor
+
 
 
 def transform(data):
@@ -33,18 +47,16 @@ def collate_fn(batch):
         'labels': torch.tensor([x['labels'] for x in batch])
     }
 
-def Model(model_name, num_labels, id2label, label2id, WithInfo, Vit_or_Auto):
-    if Vit_or_Auto == 'vit':
-        if WithInfo:
-            return ViTForImageClassification.from_pretrained(
-            model_name,
-            num_labels=num_labels,
-            id2label=id2label,
-            label2id=label2id)
-        else:
-            return ViTForImageClassification.from_pretrained(model_name)
-    elif Vit_or_Auto == 'auto':
-        return AutoModelForImageClassification
+def Model(model_name, num_labels, id2label, label2id, WithInfo):
+    if WithInfo:
+        return ViTForImageClassification.from_pretrained(
+        model_name,
+        num_labels=num_labels,
+        id2label=id2label,
+        label2id=label2id)
+    else:
+        return ViTForImageClassification.from_pretrained(model_name)
+
 
 def training_args(output_dir,num_train_epochs):
 
@@ -63,7 +75,7 @@ def training_args(output_dir,num_train_epochs):
  # report_to='tensorboard',
   load_best_model_at_end=True)
 
-def Training_func(model,training_args,collate_fnm,compute_metrics,train_dataset,eval_dataset,tokenizer):
+def Training_func(model,training_args,collate_fn,compute_metrics,train_dataset,eval_dataset,tokenizer):
     return Trainer(
     model=model,
     args=training_args,
@@ -96,7 +108,7 @@ def evaluate_on_test(trainer, test_dataset):
     return metrics
 
 
-processor = model_processor('google/vit-base-patch16-224-in21k', 'vit')
+processor = model_processor('google/vit-base-patch16-224-in21k')
 
 train_dir = 'C:\\Users\\julia\\Desktop\\agu\\train'
 test_dir = 'C:\\Users\\julia\\Desktop\\agu\\test'
@@ -118,9 +130,13 @@ labels = os.listdir(Data_dir)
 id2label = {str(i): c for i, c in enumerate(labels)}
 label2id = {c: str(i) for i, c in enumerate(labels)}
 
-model = Model('google/vit-base-patch16-224-in21k', len(labels), id2label, label2id, True, 'vit')
+# Inicjalizacja modelu
+model = Model('google/vit-base-patch16-224-in21k', len(labels), id2label, label2id, True)
 
-model_training_args = training_args("./vit-task_2", 5)
+# Zamrożenie wag do warstwy "encoder.layer.8"
+set_requires_grad_for_layers(model, freeze_until_layer="encoder.layer.8")
+
+model_training_args = training_args("./vit-task_2", 2)
 
 training_cat = Training_func(model, model_training_args, collate_fn,
                              compute_metrics, train_ds['train'], valid_ds['train'], processor)
