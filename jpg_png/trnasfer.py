@@ -136,7 +136,7 @@ model = Model('google/vit-base-patch16-224-in21k', len(labels), id2label, label2
 # Zamrożenie wag do warstwy "encoder.layer.8"
 set_requires_grad_for_layers(model, freeze_until_layer="encoder.layer.8")
 
-model_training_args = training_args("./vit-task_2", 2)
+model_training_args = training_args("./vit-task", 2)
 
 training_cat = Training_func(model, model_training_args, collate_fn,
                              compute_metrics, train_ds['train'], valid_ds['train'], processor)
