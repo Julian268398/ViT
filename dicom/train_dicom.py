@@ -1,14 +1,14 @@
 import torch
 from torch.utils.data import DataLoader
-from torch.optim import Adam
+from torch.optim import AdamW
 from torch.nn import CrossEntropyLoss
 from main_dicom import VisionTransformer, get_dataloaders  # Zaimportuj funkcję do ładowania danych
 
 # Konfiguracja
 DATA_DIR = "C:\\Users\\julia\\Desktop\\VIT"
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 EPOCHS = 20
-LEARNING_RATE = 3e-4
+LEARNING_RATE = 1e-5
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {DEVICE}")
 
@@ -19,7 +19,7 @@ train_loader, val_loader = get_dataloaders(DATA_DIR, BATCH_SIZE)
 model = VisionTransformer(img_size=512, in_chans=1, n_classes=2).to(DEVICE)
 
 # Optymalizator i funkcja kosztu
-optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
+optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-8)
 criterion = CrossEntropyLoss()
 
 # Early Stopping Configuration

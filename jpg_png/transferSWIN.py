@@ -25,7 +25,7 @@ def collate_fn(batch):
     }
 
 def Model(model_name, num_labels, id2label, label2id):
-    return SwinForImageClassification.from_pretrained(
+    model = SwinForImageClassification.from_pretrained(
         model_name,
         num_labels=num_labels,
         id2label=id2label,
@@ -33,10 +33,16 @@ def Model(model_name, num_labels, id2label, label2id):
         ignore_mismatched_sizes=True
     )
 
+    # Odmrażanie wszystkich warstw
+    for param in model.parameters():
+        param.requires_grad = True
+
+    return model
+
 def training_args(output_dir, num_train_epochs):
     return TrainingArguments(
         output_dir=output_dir,
-        per_device_train_batch_size=16,
+        per_device_train_batch_size=4,
         evaluation_strategy="steps",
         num_train_epochs=num_train_epochs,
         save_steps=100,

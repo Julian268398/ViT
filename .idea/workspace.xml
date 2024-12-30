@@ -4,19 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5410aa59-0761-4b73-b0e9-51ec03e3cd81" name="Changes" comment="First test">
-      <change afterPath="$PROJECT_DIR$/24.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dicom/dicom_reading.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dicom/train_dicom.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jpg_png/augmentation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jpg_png/main_jpg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jpg_png/train_jpg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jpg_png/trnasfer.py" afterDir="false" />
+    <list default="true" id="5410aa59-0761-4b73-b0e9-51ec03e3cd81" name="Changes" comment="wstępnie końcowe wersje transfer learningu">
+      <change afterPath="$PROJECT_DIR$/dicom/test_dicom.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicom/main_dicom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/main_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicom/main_dicom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/train_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicom/train_dicom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_png/augmentation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/main_jpg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/train_jpg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/transferSWIN.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_png/transferSWIN.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,10 +44,12 @@
     &quot;Python.data_transport.executor&quot;: &quot;Run&quot;,
     &quot;Python.dicom.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main_dicom.executor&quot;: &quot;Run&quot;,
     &quot;Python.main_jpg.executor&quot;: &quot;Run&quot;,
     &quot;Python.test.executor&quot;: &quot;Run&quot;,
     &quot;Python.train.executor&quot;: &quot;Run&quot;,
     &quot;Python.train_jpg.executor&quot;: &quot;Run&quot;,
+    &quot;Python.transferSWIN.executor&quot;: &quot;Run&quot;,
     &quot;Python.trnasfer.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -116,7 +114,12 @@
       <workItem from="1734267930258" duration="12840000" />
       <workItem from="1734345473226" duration="12738000" />
       <workItem from="1734518712233" duration="20049000" />
-      <workItem from="1734616762668" duration="619000" />
+      <workItem from="1734616762668" duration="3608000" />
+      <workItem from="1734785464237" duration="2378000" />
+      <workItem from="1734873323922" duration="4464000" />
+      <workItem from="1735319165925" duration="15742000" />
+      <workItem from="1735387958806" duration="8477000" />
+      <workItem from="1735474645243" duration="6185000" />
     </task>
     <task id="LOCAL-00001" summary="Tutorial implementation">
       <option name="closed" value="true" />
@@ -134,7 +137,31 @@
       <option name="project" value="LOCAL" />
       <updated>1733386961522</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Stworzenie dwóch modeli">
+      <option name="closed" value="true" />
+      <created>1734621503234</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734621503234</updated>
+    </task>
+    <task id="LOCAL-00004" summary="poprawki">
+      <option name="closed" value="true" />
+      <created>1735338340330</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1735338340330</updated>
+    </task>
+    <task id="LOCAL-00005" summary="wstępnie końcowe wersje transfer learningu">
+      <option name="closed" value="true" />
+      <created>1735388541449</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1735388541449</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,17 +181,32 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Tutorial implementation" />
     <MESSAGE value="First test" />
-    <option name="LAST_COMMIT_MESSAGE" value="First test" />
+    <MESSAGE value="Stworzenie dwóch modeli" />
+    <MESSAGE value="poprawki" />
+    <MESSAGE value="wstępnie końcowe wersje transfer learningu" />
+    <option name="LAST_COMMIT_MESSAGE" value="wstępnie końcowe wersje transfer learningu" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dicom/main_dicom.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ViT$test.coverage" NAME="test Coverage Results" MODIFIED="1733163268509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$main.coverage" NAME="main Coverage Results" MODIFIED="1734366892332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ViT$augmentation.coverage" NAME="augmentation Coverage Results" MODIFIED="1734567001752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$augmentation.coverage" NAME="augmentation Coverage Results" MODIFIED="1735397537068" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
     <SUITE FILE_PATH="coverage/ViT$train.coverage" NAME="train Coverage Results" MODIFIED="1734367047149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ViT$transferSWIN.coverage" NAME="transferSWIN Coverage Results" MODIFIED="1735498656229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
     <SUITE FILE_PATH="coverage/ViT$train_jpg.coverage" NAME="train_jpg Coverage Results" MODIFIED="1734454927557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
     <SUITE FILE_PATH="coverage/ViT$data_transport.coverage" NAME="data_transport Coverage Results" MODIFIED="1734367024893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ViT$trnasfer.coverage" NAME="trnasfer Coverage Results" MODIFIED="1734567631334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$trnasfer.coverage" NAME="trnasfer Coverage Results" MODIFIED="1735347129005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
     <SUITE FILE_PATH="coverage/ViT$dicom.coverage" NAME="dicom Coverage Results" MODIFIED="1734283680439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$main_jpg.coverage" NAME="main_jpg Coverage Results" MODIFIED="1734454824076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$main_dicom.coverage" NAME="main_dicom Coverage Results" MODIFIED="1734622085370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

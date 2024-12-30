@@ -290,7 +290,7 @@ class VisionTransformer(nn.Module):
           head: nn.Linear, Classifier head
     """
 
-    def __init__(self, img_size=512, patch_size=16, in_chans=1, n_classes=1000, embed_dim=768, depth=12, n_heads=12,
+    def __init__(self, img_size=512, patch_size=16, in_chans=1, n_classes=2, embed_dim=768, depth=12, n_heads=12,
                  mlp_ratio=4.0, qkv_bias=True, p=0., attn_p=0.):
         super().__init__()
         self.img_size = img_size
