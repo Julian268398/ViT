@@ -4,15 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5410aa59-0761-4b73-b0e9-51ec03e3cd81" name="Changes" comment="wstępnie końcowe wersje transfer learningu">
-      <change afterPath="$PROJECT_DIR$/dicom/test_dicom.py" afterDir="false" />
+    <list default="true" id="5410aa59-0761-4b73-b0e9-51ec03e3cd81" name="Changes" comment="Powinno być ok">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicom/main_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicom/main_dicom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicom/train_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicom/train_dicom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jpg_png/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_png/augmentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jpg_png/main_jpg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jpg_png/train_jpg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jpg_png/transferSWIN.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_png/transferSWIN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/24.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/dicom_reading.py" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/dicom_reading.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/main_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/test_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicom/train_dicom.py" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/transfer_learning/augmentation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/transferSWIN.py" beforeDir="false" afterPath="$PROJECT_DIR$/transfer_learning/transferSWIN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jpg_png/trnasfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/transfer_learning/transferViT.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ml.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +49,9 @@
     &quot;Python.main_dicom.executor&quot;: &quot;Run&quot;,
     &quot;Python.main_jpg.executor&quot;: &quot;Run&quot;,
     &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_dicom.executor&quot;: &quot;Run&quot;,
     &quot;Python.train.executor&quot;: &quot;Run&quot;,
+    &quot;Python.train_dicom.executor&quot;: &quot;Run&quot;,
     &quot;Python.train_jpg.executor&quot;: &quot;Run&quot;,
     &quot;Python.transferSWIN.executor&quot;: &quot;Run&quot;,
     &quot;Python.trnasfer.executor&quot;: &quot;Run&quot;,
@@ -119,7 +123,11 @@
       <workItem from="1734873323922" duration="4464000" />
       <workItem from="1735319165925" duration="15742000" />
       <workItem from="1735387958806" duration="8477000" />
-      <workItem from="1735474645243" duration="6185000" />
+      <workItem from="1735474645243" duration="6245000" />
+      <workItem from="1735578895053" duration="1911000" />
+      <workItem from="1735669555951" duration="9181000" />
+      <workItem from="1736084423126" duration="11770000" />
+      <workItem from="1736161263279" duration="11497000" />
     </task>
     <task id="LOCAL-00001" summary="Tutorial implementation">
       <option name="closed" value="true" />
@@ -161,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735388541449</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Powinno być ok">
+      <option name="closed" value="true" />
+      <created>1735517733589</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1735517733589</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,29 +200,22 @@
     <MESSAGE value="Stworzenie dwóch modeli" />
     <MESSAGE value="poprawki" />
     <MESSAGE value="wstępnie końcowe wersje transfer learningu" />
-    <option name="LAST_COMMIT_MESSAGE" value="wstępnie końcowe wersje transfer learningu" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dicom/main_dicom.py</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Powinno być ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="Powinno być ok" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ViT$test_dicom.coverage" NAME="test_dicom Coverage Results" MODIFIED="1735818710591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/dicom" />
+    <SUITE FILE_PATH="coverage/ViT$train.coverage" NAME="train Coverage Results" MODIFIED="1734367047149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ViT$train_jpg.coverage" NAME="train_jpg Coverage Results" MODIFIED="1734454927557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$trnasfer.coverage" NAME="trnasfer Coverage Results" MODIFIED="1735347129005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$main_dicom.coverage" NAME="main_dicom Coverage Results" MODIFIED="1735669971809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$test.coverage" NAME="test Coverage Results" MODIFIED="1733163268509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$main.coverage" NAME="main Coverage Results" MODIFIED="1734366892332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$augmentation.coverage" NAME="augmentation Coverage Results" MODIFIED="1735397537068" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
-    <SUITE FILE_PATH="coverage/ViT$train.coverage" NAME="train Coverage Results" MODIFIED="1734367047149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$transferSWIN.coverage" NAME="transferSWIN Coverage Results" MODIFIED="1735498656229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
-    <SUITE FILE_PATH="coverage/ViT$train_jpg.coverage" NAME="train_jpg Coverage Results" MODIFIED="1734454927557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
+    <SUITE FILE_PATH="coverage/ViT$train_dicom.coverage" NAME="train_dicom Coverage Results" MODIFIED="1735763945600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/dicom" />
     <SUITE FILE_PATH="coverage/ViT$data_transport.coverage" NAME="data_transport Coverage Results" MODIFIED="1734367024893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ViT$trnasfer.coverage" NAME="trnasfer Coverage Results" MODIFIED="1735347129005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
-    <SUITE FILE_PATH="coverage/ViT$dicom.coverage" NAME="dicom Coverage Results" MODIFIED="1734283680439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViT$main_jpg.coverage" NAME="main_jpg Coverage Results" MODIFIED="1734454824076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jpg_png" />
-    <SUITE FILE_PATH="coverage/ViT$main_dicom.coverage" NAME="main_dicom Coverage Results" MODIFIED="1734622085370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ViT$dicom.coverage" NAME="dicom Coverage Results" MODIFIED="1734283680439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

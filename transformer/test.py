@@ -3,11 +3,11 @@ from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, \
     classification_report
-from main_dicom import VisionTransformer  # Importujemy model
+from main import VisionTransformer
 
 # Konfiguracja
-DATA_DIR = "C:\\Users\\julia\\Desktop\\VIT"
-MODEL_PATH = "../model_dicom.pth"
+DATA_DIR = "ścieżka do folderu zawierającego przygotowane dane w folderach traningowych, walidacyjnych oraz testowych"
+MODEL_PATH = "nazwa_modelu.pth"
 BATCH_SIZE = 4
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {DEVICE}")
@@ -16,12 +16,12 @@ print(f"Using device: {DEVICE}")
 # Funkcja do ładowania danych testowych
 def get_test_loader(data_dir, batch_size):
     test_transform = transforms.Compose([
-        transforms.Grayscale(num_output_channels=1),
+        transforms.Grayscale(num_output_channels=3),
         transforms.Resize((512, 512)),
         transforms.ToTensor(),
     ])
 
-    test_dataset = datasets.ImageFolder(root=f"{data_dir}/testing", transform=test_transform)
+    test_dataset = datasets.ImageFolder(root=f"{data_dir}/test", transform=test_transform)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     return test_loader
 
@@ -29,8 +29,8 @@ def get_test_loader(data_dir, batch_size):
 # Załaduj dane testowe
 test_loader = get_test_loader(DATA_DIR, BATCH_SIZE)
 
-# Załaduj model
-model = VisionTransformer(img_size=512, in_chans=1, n_classes=2).to(DEVICE)
+# Załadowanie modelu
+model = VisionTransformer(img_size=512, in_chans=3, n_classes=2).to(DEVICE)
 model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
 model.eval()
 

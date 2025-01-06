@@ -9,6 +9,10 @@ from transformers import TrainingArguments
 from transformers import Trainer
 from transformers import AutoImageProcessor
 
+"""
+Implementacja analogiczna do pliku "transferViT.py
+"""
+
 def model_processor(model_name):
     processor = AutoImageProcessor.from_pretrained(model_name)
     return processor
@@ -90,9 +94,9 @@ def evaluate_on_test(trainer, test_dataset):
 processor = model_processor('microsoft/swin-tiny-patch4-window7-224')
 
 # Ścieżki do danych
-train_dir = 'C:\\Users\\julia\\Desktop\\agu\\train'
-test_dir = 'C:\\Users\\julia\\Desktop\\agu\\test'
-valid_dir = 'C:\\Users\\julia\\Desktop\\agu\\valid'
+train_dir = 'ścieżka do folderu zawierającego dane treningowe'
+test_dir = 'ścieżka do folderu zawierającego dane testowe'
+valid_dir = 'ścieżka do folderu zawierającego dane walidacyjne'
 
 # Ładowanie zbiorów danych
 valid_dataset = datasets.load_dataset("imagefolder", data_dir=valid_dir)

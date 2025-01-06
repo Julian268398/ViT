@@ -1,7 +1,7 @@
 import Augmentor
 
-# Ścieżka do folderu z obrazami
-folder_path = r"C:\Users\julia\Desktop\aaa"
+
+folder_path = r"Ścieżka do folderu z obrazami"
 
 # Inicjalizacja pipeline z folderem
 p = Augmentor.Pipeline(folder_path)

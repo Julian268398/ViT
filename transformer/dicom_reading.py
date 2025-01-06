@@ -1,10 +1,14 @@
-import numpy as np # linear algebra
-import os # accessing directory structure
+import numpy as np
+import os
 
-import pydicom #for loading dicom
+import pydicom
 import scipy.ndimage
+"""
+Zmodyfikowany kod ze strony "https://www.kaggle.com/code/neuerfrhling/read-ct-dicom", dotyczący odczytywania plików dicom skanów tomografii komputerowej.
+Zaimplementowany w celu zapoznania się ze strukturą plików dcm.
+"""
 
-# A helper funtion for loading dicom scans as nump arrays
+#Funkcja do ładowania skanów jako tablice numpy
 def load_single_dicom(slice_path):
     slice_data = pydicom.dcmread(slice_path)  # Wczytujemy wybrany plik DICOM
     pixel_array = slice_data.pixel_array  # Dane pikselowe (macierz 2D)
@@ -23,7 +27,7 @@ def load_single_dicom(slice_path):
 
     return pixel_array, spacing, orientation, origin, slice_data
 
-slice_path = 'C:\\Users\\julia\\Desktop\\VIT\\training\\benign\\LUNGx-CT001\\09-24-2006-7805-CT INFUSED CHEST-62081\\4.000000-HIGH RES-69714\\1-001.dcm'
+slice_path = 'tutaj umieszczona była ścieżka do pojedynczego pliku dcm'
 
 # Załaduj jedno cięcie
 pixel_array, spacing, orientation, origin, slice_data = load_single_dicom(slice_path)

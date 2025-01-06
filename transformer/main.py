@@ -8,36 +8,38 @@ from torch.utils.data import Dataset
 import pydicom
 from torchvision import transforms
 
-
+"""
+Kod implementujący konstrukcję transformera
+"""
 
 
 class PatchEmbedding(nn.Module):
     """
-    Splits image into patches
+    Podział obrazu na patche/łatki
 
-    Parameters:
+    Parametery:
 
     img_size: int
-        size of the image (considering it is a square)
+        rozmiar zdjęcia (zakładając, że jest kwadratem)
 
     patch_size: int
-        size of the patch
+        rozmiar patcha/łatki
 
     input_channels: int
-        number of input channels
+        liczba kanałów wejściowych
 
     embed_dim: int
-        embedding dimension
+        wymiar osadzenia
 
     __________________________
 
-    Attributes:
+    Atrybuty:
 
     n_patches: int
-        number of patches inside of image
+        liczba patchy w zdjęciu
 
     proj: nn.Conv2d
-        Convolutional layer that does both the splitting into patches and their embedding.
+         Warstwa konwolucyjna, która dokonuje zarówno podziału na patche, jak i ich osadzania.
     """
 
     def __init__(self, img_size, patch_size, in_chans=1, embed_dim=768):
@@ -57,13 +59,13 @@ class PatchEmbedding(nn.Module):
 
     def forward(self, x):
         """
-        Run forward pass.
+        Propagacja w przód
 
         :param x: torch.Tensor
-            Shape '(n_samples, input_channels, img_size, img_size)'.
+            kształt '(n_samples, input_channels, img_size, img_size)'.
 
         :return: torch.Tensor
-            Shape '(n_samples, n_patches, embed_dim)'
+            kształt '(n_samples, n_patches, embed_dim)'
         """
         x = self.proj(x)
         # (n_sample, embed_dim, n_patches ** 0.5, n_patches ** 0.5)
@@ -77,28 +79,37 @@ class PatchEmbedding(nn.Module):
 
 class Attention(nn.Module):
     """
-    Attention mechanism
+    Mechanizm atencji
 
-    Parameters:
-        dim: int, The input and out dimension of per token features
+    Parametery:
+        dim: int
+            Wymiar wejściowy i wyjściowy cech dla każdego tokena
 
-        n_heads: int, The number of attention heads
+        n_heads: int
+            Liczba głów mechanizmu atencji
 
-        qkv_bias: bool, If True then we include bias to the query, key and value projections
+        qkv_bias: bool
+            Jeśli True, to dodajemy bias (przesunięcie) do projekcji zapytań (query), kluczy (key) i wartości (value)
 
-        attn_p: float, Dropout probability to the query, key and value tensors
+        attn_p: float
+            Prawdopodobieństwo dropout dla tensorów zapytań (query), kluczy (key) i wartości (value)
 
-        proj_p: float, Dropout probability to the query tensor
+        proj_p: float
+            Prawdopodobieństwo dropout dla tensora wynikowego (po projekcji zapytań)
 
     _______________
-    Attributes:
-        scale: float, Normalizing constant for the dot product
+    Atrybuty:
+        scale: float
+            Stała normalizująca dla iloczynu skalarnego
 
-        qkv: nn.Linear, Linear projection for the query, key and value
+        qkv: nn.Linear
+            Projekcja liniowa dla zapytań (query), kluczy (key) i wartości (value)e
 
-        proj: nn.Linear, Linear mappin that takes in the concatenated output of all attention heads and maps it into a new space
+        proj: nn.Linear
+            Przekształcenie liniowe, które przyjmuje połączone wyjście ze wszystkich głów atencji i rzutuje je na nową przestrzeń
 
-        attn_drop, proj_drop: nn.Dropout, Dropout layers
+        attn_drop, proj_drop: nn.Dropout
+            Warstwy dropout
     """
 
     def __init__(self, dim, n_heads=12, qkv_bias=True, attn_p=0., proj_p=0.):
@@ -115,11 +126,12 @@ class Attention(nn.Module):
 
     def forward(self, x):
         """
-        Run forward pass
+        Propagacja w przód
+
         :param x: torch.Tensor
-        Shape '(n_samples, n_patches + 1, dim)'
+            kształt '(n_samples, n_patches + 1, dim)'
         :return: torch.Tensor
-        Shape '(n_samples, n_patches + 1, dim)'
+            kształt '(n_samples, n_patches + 1, dim)'
         """
         n_samples, n_tokens, dim = x.shape
 
@@ -157,26 +169,34 @@ class Attention(nn.Module):
 
 class MLP(nn.Module):
     """
-    Multi-layer perceptron.
+    Perceptron wielowarstwowy (ang. Multi-layer Perceptron)
 
-    Parameters:
-        in_features: int, Number of input features
+    Parametry:
+        in_features: int
+            Liczba cech wejściowych
 
-        hidden_features: int, Number of the hidden nodes in layer
+        hidden_features: int
+            Liczba neuronów w warstwie ukrytej
 
-        out_features: int, Number of output features
+        out_features: int
+            Liczba cech wyjściowych
 
-        p: float, Dropout probability
+        p: float
+            Prawdopodobieństwo dropout
 
     _______________
-    Attributes:
-        fc: nn.Linear, The first linear layer
+    Atrybuty:
+        fc: nn.Linear
+            Pierwsza warstwa liniowa
 
-        act: nn.GELU, GELU activation function
+        act: nn.GELU
+            Funkcja aktywacji GELU
 
-        fc2: nn.Linear, Second linear layer
+        fc2: nn.Linear
+            Druga warstwa liniowa
 
-        drop: nn.Dropout, Dropout layer
+        drop: nn.Dropout
+            Warstwa dropout
     """
 
     def __init__(self, in_features, hidden_features, out_features, p=0.):
@@ -188,9 +208,12 @@ class MLP(nn.Module):
 
     def forward(self, x):
         """
-        Run forward pass
-        :param x: torch.Tensor, Shape (n_samples, n_patches + 1, in_features)
-        :return: torch.Tensor, Shape (n_samples, n_patches + 1, out_features)
+        Propagacja w przód
+
+        :param x: torch.Tensor
+            kształt (n_samples, n_patches + 1, in_features)
+        :return: torch.Tensor
+            kształt (n_samples, n_patches + 1, out_features)
         """
         x = self.fc1(x)
         # (n_samples, n_patches + 1, hidden_features)
@@ -206,26 +229,34 @@ class MLP(nn.Module):
 
 class Block(nn.Module):
     """
-        Transformer block
+        Blok Transformera
 
-        Parameters:
-            dim: int, The input and out dimension of per token features
+        Parametry:
+            dim: int
+                Wymiar wejściowy i wyjściowy cech dla każdego tokena
 
-            n_heads: int, The number of attention heads
+            n_heads: int
+                Liczba głów mechanizmu atencji
 
-            mlp_ratio: float, Determines the hidden size of the "MLP" module with respect ti "dim"
+            mlp_ratio: float
+                Określa rozmiar warstwy ukrytej modułu "MLP" względem "dim"
 
-            qkv_bias: bool, If True then we include bias to the query, key and value projections
+            qkv_bias: bool
+                Jeśli True, to dodajemy bias (przesunięcie) do projekcji zapytań (query), kluczy (key) i wartości (value)
 
-            p, attn_P: float, Dropout probability
+            p, attn_p: float
+                Prawdopodobieństwo dropout
 
-        _______________
-        Attributes:
-            norm1, norm2: LayerNorm, Layer normalization
+    _______________
+    Atrybuty:
+        norm1, norm2: LayerNorm
+            Normalizacja warstw
 
-            attn: Attention, Attention module
+        attn: Attention
+            Moduł atencji
 
-            mlp: MLP, MLP module
+        mlp: MLP
+            Moduł MLP
     """
 
     def __init__(self, dim, n_heads, mlp_ratio=4.0, qkv_bias=True, p=0., attn_p=0.):
@@ -238,11 +269,12 @@ class Block(nn.Module):
 
     def forward(self, x):
         """
-                Run forward pass
-                :param x: torch.Tensor
-                Shape '(n_samples, n_patches + 1, dim)'
-                :return: torch.Tensor
-                Shape '(n_samples, n_patches + 1, dim)'
+        Propagacja w przód
+
+            :param x: torch.Tensor
+                kształt '(n_samples, n_patches + 1, dim)'
+            :return: torch.Tensor
+                kształt '(n_samples, n_patches + 1, dim)'
         """
         x = x + self.attn(self.norm1(x))
         x = x + self.mlp(self.norm2(x))
@@ -252,42 +284,58 @@ class Block(nn.Module):
 
 class VisionTransformer(nn.Module):
     """
-    Simplified implementation of the Vision Transformer.
+    Implementacja transformera wizyjnego
 
-    Parameters:
-            img_size: int, Both height and the width of the image (it is square)
+    Parametery:
+            img_size: int
+                wysokość i szerokość zdjęcia (zakłada się, że jest kwadratowe)
 
-            patch_size: int, Both height and the width of the patch (it is square)
+            patch_size: int
+                wysokość i szerokość łatki (jest kwadratowa)
 
-            in_chans: int, Number of input channels
+            in_chans: int
+                liczba kanałów wejściowych
 
-            n_classes: int, Number of classes
+            n_classes: int
+                liczba klas, czyli liczba możliwych kategorii, do których model będzie przyporządkowywał dane podczas klasyfikacji.
 
-            embed_dim: int, Dimensionality of the token/patch embeddings
+            embed_dim: int
+                Wymiar osadzeń tokenów/patchy
 
-            depth: int, Number of blocks
+            depth: int
+                Liczba bloków
 
-            n_heads: int, Number of attention heads
+            n_heads: int
+                Liczba głów mechanizmu atencji
 
-            mlp_ratio: float, Determines the hidden dimension of the 'MLP' module.
+            mlp_ratio: float
+                Określa wymiar ukrytej warstwy modułu 'MLP'
 
-            qkv_bias: bool, If True then we include bias to the query, key and value projections
+            qkv_bias: bool
+                Jeśli True, to dodajemy bias (przesunięcie) do projekcji zapytań (query), kluczy (key) i wartości (value)
 
-            p, attn_p: float, Dropout probability
+            p, attn_p: float
+                Prawdopodobieństwo dropout
 
     _______________
-    Attributes:
-          patch_embed : PatchEmbed, Instance of 'PatchEmbed' layer
+    Atrybuty:
+            patch_embed: PatchEmbed
+                Instancja warstwy 'PatchEmbed'
 
-          cls_token: nn.Parameter, Learnable parameter that will represent the first token (classification token)
+            cls_token: nn.Parameter
+                parametr, którego można się nauczyć, będzie reprezentował pierwszy token (token klasyfikacyjny)
 
-          pos_embed: nn.Parameter, Learnable position embedding for each token
+            pos_embed: nn.Parameter
+                parametr, którego można się nauczyć, wektor osadzenia pozycji dla każdego tokena
 
-          transformer_blocks: nn.ModuleList, List of transformer blocks
+            transformer_blocks: nn.ModuleList
+                Lista bloków transformera
 
-          norm: nn.LayerNorm, Layer normalization
+            norm: nn.LayerNorm
+                Normalizacja warstwy
 
-          head: nn.Linear, Classifier head
+            head: nn.Linear
+                Głowa klasyfikatora
     """
 
     def __init__(self, img_size=512, patch_size=16, in_chans=1, n_classes=2, embed_dim=768, depth=12, n_heads=12,
@@ -329,13 +377,13 @@ class VisionTransformer(nn.Module):
 
     def forward(self, x):
         """
-        Run forward pass.
+        Propagacja w przód
 
         :param x: torch.Tensor
-        Shape '(n_samples, in_chans, img_size, img_size)'
+            kształt '(n_samples, in_chans, img_size, img_size)'
 
         :return: torch.Tensor
-        Shape '(n_samples, n_classes)'
+            kształt '(n_samples, n_classes)'
         """
         # Patch embedding
         x = self.patch_embed(x)
@@ -357,9 +405,36 @@ class VisionTransformer(nn.Module):
         return x
 
 
+#Poniższa częśc wykorzystana była podczas realizacji projektu obsługującego pliki rozszerzenia dcm
 class DICOMDataset(Dataset):
     """
-    Dataset dla obrazów DICOM
+    Dataset dla obrazów DICOM.
+
+    Parametery:
+    -----------
+    dicom_dir: str
+        Ścieżka do katalogu zawierającego obrazy DICOM, zorganizowane w podfolderach oznaczających klasy.
+
+    transform: callable
+        Transformacje do zastosowania na obrazach (domyślnie brak transformacji).
+
+    __________________________
+
+    Atrybuty:
+    ---------
+    dicom_dir: str
+        Ścieżka do katalogu DICOM.
+
+    transform: callable
+        Transformacje stosowane do obrazów.
+
+    image_paths: list[str]
+        Lista ścieżek do obrazów DICOM w zestawie danych.
+
+    labels: list[int]
+        Lista etykiet przypisanych do obrazów, gdzie:
+        - 0 oznacza "benign" (łagodny)
+        - 1 oznacza "malignant" (złośliwy)
     """
 
     def __init__(self, dicom_dir, transform=None):
@@ -379,12 +454,23 @@ class DICOMDataset(Dataset):
 
     def __len__(self):
         """
-        Wymagane w PyTorch, przez klasę Dataset
-        zwraca liczbę próbek w zbiorze
+            Zwraca długość zbioru danych.
+
+            :return: int
+                Liczba obrazów w zbiorze danych.
         """
         return len(self.image_paths)
 
     def __getitem__(self, idx):
+        """
+            Pobiera element zbioru danych.
+
+            :param idx: int
+                Indeks elementu do pobrania.
+
+            :return: tuple
+                Obraz przetworzony (torch.Tensor) i jego etykieta (int).
+        """
         dicom_path = self.image_paths[idx]
         label = self.labels[idx]
 
@@ -414,6 +500,21 @@ transform = transforms.Compose([
 
 # Przygotowanie zbioru treningowego i walidacyjnego
 def get_dataloaders(data_dir, batch_size):
+    """
+        Przygotowanie DataLoaderów dla zbiorów treningowego i walidacyjnego.
+
+        Parametery:
+        data_dir: str
+            Ścieżka do katalogu z danymi, zawierającego podkatalogi "training" i "validating".
+
+        batch_size: int
+            Liczba próbek w jednej partii danych (batchu).
+
+
+        Zwraca:
+        tuple[DataLoader, DataLoader]
+            DataLoader dla zbioru treningowego i walidacyjnego.
+    """
     train_dataset = DICOMDataset(dicom_dir=f"{data_dir}/training", transform=transform)
     val_dataset = DICOMDataset(dicom_dir=f"{data_dir}/validating", transform=transform)
 
